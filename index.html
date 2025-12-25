@@ -89,6 +89,64 @@
     </main>
   </div>
 
+  <div class="modalOverlay" id="settingsOverlay" hidden aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modalHeader">
+        <div class="modalTitle" id="settingsTitle">Settings</div>
+        <button class="iconBtn" id="closeSettingsBtn" aria-label="Close settings">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M6.23 4.81 4.81 6.23 10.59 12l-5.78 5.77 1.42 1.42L12 13.41l5.77 5.78 1.42-1.42L13.41 12l5.78-5.77-1.42-1.42L12 10.59z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modalBody">
+        <div class="field">
+          <label for="cityInput">City</label>
+          <div class="row">
+            <input id="cityInput" type="text" placeholder="e.g. Helsinki" />
+            <button class="btn" id="saveCityBtn">Save</button>
+          </div>
+          <div class="smallHint">Uses OpenStreetMap to update location, timezone and prayer times.</div>
+        </div>
+
+        <div class="field">
+          <label for="calcMethod">Calculation Method</label>
+          <div class="row">
+            <select id="calcMethod">
+              <option value="2">Egyptian General Authority of Survey</option>
+              <option value="3">Umm Al-Qura University, Makkah</option>
+              <option value="4">University of Islamic Sciences, Karachi</option>
+              <option value="5">Islamic Society of North America</option>
+              <option value="12">Muslim World League</option>
+              <option value="13">Qatar</option>
+            </select>
+            <button class="btn secondary" id="saveMethodBtn">Save method</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Adhan Sound</label>
+          <div class="row space">
+            <button class="pill" id="globalSoundBtn" type="button">Sound: OFF</button>
+            <button class="btn secondary" id="testSoundBtn" type="button">Test beep</button>
+          </div>
+          <div class="smallHint">Global toggle plus per-prayer controls in the list.</div>
+        </div>
+
+        <div class="field danger">
+          <div class="row space">
+            <div>
+              <div style="font-weight: 600">Reset all data</div>
+              <div class="smallHint">Clears saved city, method and sound preferences.</div>
+            </div>
+            <button class="btn danger" id="resetBtn" type="button">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
