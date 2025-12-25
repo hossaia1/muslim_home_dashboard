@@ -5,6 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Muslim Home Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    html, body {
+      overflow: hidden;
+    }
+
+    main.grid {
+      height: calc(100vh - 60px);
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 14px;
+    }
+
+    section.card.empty {
+      background: none;
+      border: 1px dashed var(--line);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .sunriseTag {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
+    .modal {
+      background: #111825; /* override too-transparent background */
+    }
+  </style>
 </head>
 
 <body>
@@ -16,7 +48,6 @@
       </div>
 
       <button class="iconBtn" id="openSettingsBtn" aria-label="Open settings" title="Settings">
-        <!-- gear icon -->
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
           <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 1h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.58.23-1.12.54-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 7.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.4 1.05.71 1.63.94l.36 2.54c.04.24.25.42.49.42h3.8c.24 0 .45-.18.49-.42l.36-2.54c.58-.23 1.12-.54 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/>
         </svg>
@@ -24,7 +55,6 @@
     </header>
 
     <main class="grid">
-      <!-- Time -->
       <section class="card hero">
         <div class="clock" id="timeNow">--:--</div>
         <div class="date" id="dateNow">—</div>
@@ -32,17 +62,14 @@
         <div class="countdown" id="countdown">--:--:--</div>
       </section>
 
-      <!-- Prayer times -->
       <section class="card">
         <div class="cardTitle">Prayer Times</div>
         <div class="prayerList" id="prayerList"></div>
         <div class="smallHint" id="prayerMeta">—</div>
       </section>
 
-      <!-- Weather -->
       <section class="card">
         <div class="cardTitle">Weather</div>
-
         <div class="weatherTop">
           <div class="weatherIcon" id="weatherIcon"></div>
           <div>
@@ -53,70 +80,13 @@
             <div class="smallHint" id="weatherUpdated">—</div>
           </div>
         </div>
+        <div class="dayparts" id="dayparts"></div>
+      </section>
 
-        <div class="dayparts" id="dayparts">
-          <!-- populated by JS -->
-        </div>
+      <section class="card empty">
+        <div id="verseBox">— Reserved space (e.g. Quran verse or Hadith) —</div>
       </section>
     </main>
-  </div>
-
-  <!-- SETTINGS MODAL -->
-  <div class="modalOverlay" id="settingsOverlay" hidden>
-    <div class="modal">
-      <div class="modalHeader">
-        <div class="modalTitle">Settings</div>
-        <button class="iconBtn" id="closeSettingsBtn" aria-label="Close settings" title="Close">
-          ✕
-        </button>
-      </div>
-
-      <div class="modalBody">
-        <div class="field">
-          <label for="cityInput">Location (city)</label>
-          <div class="row">
-            <input id="cityInput" type="text" placeholder="e.g., Helsinki" />
-            <button class="btn" id="saveCityBtn">Save</button>
-          </div>
-          <div class="smallHint">Uses online geocoding to find coordinates.</div>
-        </div>
-
-        <div class="field">
-          <label>Adhan sound</label>
-          <div class="row space">
-            <div class="toggleRow">
-              <span class="muted">Global sound</span>
-              <button class="pill" id="globalSoundBtn" aria-label="Toggle global sound"></button>
-            </div>
-            <button class="btn secondary" id="testSoundBtn">Test beep</button>
-          </div>
-          <div class="smallHint">Tip: you must tap once to “unlock” audio in most browsers.</div>
-        </div>
-
-        <div class="field">
-          <label>Prayer method</label>
-          <div class="row">
-            <select id="calcMethod">
-              <option value="2">ISNA</option>
-              <option value="3">Muslim World League</option>
-              <option value="4">Umm Al-Qura, Makkah</option>
-              <option value="5">Egyptian General Authority</option>
-              <option value="12">Diyanet (Turkey)</option>
-            </select>
-            <button class="btn" id="saveMethodBtn">Save</button>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Per-prayer Adhan</label>
-          <div class="smallHint">Use the speaker/mute icons next to each prayer on the dashboard.</div>
-        </div>
-
-        <div class="field danger">
-          <button class="btn danger" id="resetBtn">Reset settings</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <script src="app.js"></script>
