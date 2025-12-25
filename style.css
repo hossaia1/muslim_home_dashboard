@@ -1,214 +1,347 @@
-/* ==========
-   BASIC RESET
-   ========== */
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
-body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: #f3f5f7;
-  color: #111827;
+/* ====== Base ====== */
+:root{
+  --bg: #f3f6fb;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --line: #e6ecf5;
+
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.10);
+  --radius: 18px;
+
+  --accent: #16a34a;
+  --accent-soft: #d9fbe6;
+
+  --btn: #e9eef7;
+  --btn-text: #0f172a;
+  --btn-primary: #1d4ed8;
+  --btn-primary-text: #ffffff;
 }
 
-/* ==========
-   LAYOUT (no scrolling on landscape)
-   ========== */
-.page {
-  height: 100vh;               /* Full screen height */
-  padding: 22px;
-  display: grid;
-  grid-template-columns: 1.25fr 1fr;  /* left bigger than right */
-  gap: 22px;
-  position: relative;
-  overflow: hidden;            /* avoid scrolling */
+body.dark{
+  --bg: #0b1220;
+  --card: #0f172a;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --line: #22304a;
+
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+
+  --btn: #1f2a44;
+  --btn-text: #e5e7eb;
+  --btn-primary: #3b82f6;
+  --btn-primary-text: #0b1220;
+
+  --accent-soft: rgba(22,163,74,0.20);
 }
 
-.col {
-  display: grid;
-  gap: 22px;
-  min-height: 0;               /* helps prevent overflow in grids */
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  background: var(--bg);
+  color: var(--text);
 }
 
-.col-left {
-  grid-template-rows: 1fr 1fr; /* clock card + weather card */
+/* ====== Top bar ====== */
+.topbar{
+  height: 56px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-
-.col-right {
-  grid-template-rows: 1fr 1fr; /* prayer card + empty card */
-}
-
-/* ==========
-   CARDS
-   ========== */
-.card {
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-  padding: 20px 22px;
-  min-height: 0;
-  overflow: hidden;
-  position: relative;
-}
-
-.divider {
-  height: 1px;
-  background: rgba(0,0,0,0.08);
-  margin: 18px 0;
-}
-
-/* ==========
-   SETTINGS BUTTON
-   ========== */
-.settingsBtn {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 44px;
-  height: 44px;
-  border: none;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-  cursor: pointer;
-  font-size: 18px;
-}
-
-/* ==========
-   CLOCK CARD
-   ========== */
-.locationLine {
+.location-line{
   font-size: 12px;
-  opacity: 0.7;
-  margin-bottom: 10px;
+  color: var(--muted);
+}
+.topbar-right{
+  display: flex;
+  gap: 10px;
 }
 
-.bigTime {
-  font-size: 64px;
-  font-weight: 300;
-  letter-spacing: 1px;
-  line-height: 1;
+/* ====== Layout ====== */
+.app{
+  height: calc(100vh - 56px);
+  padding: 14px 18px 18px;
 }
+.grid{
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 18px;
+}
+.col{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.col-left .card-time{ flex: 0 0 42%; }
+.col-left .card-weather{ flex: 1; }
+.col-right .card-prayers{ flex: 1; }
 
-.dateLine {
-  margin-top: 6px;
+.hidden{ display: none; }
+
+/* ====== Card ====== */
+.card{
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  overflow: hidden;
+}
+.card-title{
   font-size: 18px;
-  opacity: 0.75;
+  font-weight: 650;
+  margin-bottom: 12px;
+}
+.divider{
+  height: 1px;
+  background: var(--line);
+  margin: 14px 0;
 }
 
-.nextRow {
+/* ====== Time card ====== */
+.clock{
+  font-size: 64px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+.date{
+  margin-top: 4px;
+  font-size: 18px;
+  color: var(--muted);
+}
+.next-row{
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: 12px;
   align-items: center;
-}
-
-.nextLabel { opacity: 0.75; }
-.nextPrayer {
-  font-size: 26px;
-  font-weight: 600;
-  color: #16a34a;
-}
-.countdown {
-  font-variant-numeric: tabular-nums;
-  font-size: 18px;
-  opacity: 0.85;
-}
-
-/* ==========
-   WEATHER CARD
-   ========== */
-.weatherTop {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px;
-  align-items: start;
-}
-
-.weatherTemp {
-  font-size: 56px;
-  font-weight: 300;
-  line-height: 1;
-}
-.weatherTemp .deg { font-size: 28px; vertical-align: top; }
-.weatherTemp .unit { font-size: 18px; opacity: 0.7; margin-left: 4px; }
-
-.weatherDesc { margin-top: 6px; font-size: 16px; opacity: 0.85; }
-.weatherPlace { margin-top: 4px; font-size: 12px; opacity: 0.65; }
-
-.weatherMeta {
-  text-align: right;
-  font-size: 13px;
-  opacity: 0.8;
-}
-.metaLine { margin-bottom: 6px; }
-
-.hourlyRow {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
+.next-label{
+  font-size: 14px;
+  color: var(--muted);
+}
+.next-prayer{
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.countdown{
+  font-variant-numeric: tabular-nums;
+  font-size: 16px;
+  color: var(--muted);
+}
 
-.hourChip {
-  border-radius: 12px;
-  background: rgba(0,0,0,0.03);
+/* ====== Weather card ====== */
+.weather-top{
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: start;
+  gap: 10px;
+}
+.temp{
+  font-size: 64px;
+  font-weight: 500;
+}
+.temp-unit{
+  font-size: 22px;
+  margin-top: 16px;
+  color: var(--muted);
+}
+.weather-meta{
+  padding-top: 18px;
+}
+.weather-desc{
+  font-size: 18px;
+  font-weight: 600;
+}
+.weather-city{
+  margin-top: 6px;
+  color: var(--muted);
+}
+.weather-stats{
+  display: grid;
+  gap: 10px;
+  padding-top: 18px;
+}
+.stat-label{
+  font-size: 12px;
+  color: var(--muted);
+}
+.stat-value{
+  font-size: 14px;
+  font-weight: 650;
+}
+
+/* hourly strip */
+.hourly{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.hour-card{
+  border-radius: 14px;
+  background: rgba(148, 163, 184, 0.08);
   padding: 12px;
   text-align: center;
 }
-.hourChip .t { font-size: 12px; opacity: 0.7; }
-.hourChip .temp { font-size: 18px; margin-top: 8px; }
-.hourChip .rain { font-size: 12px; opacity: 0.75; margin-top: 6px; }
-
-/* ==========
-   PRAYER CARD
-   ========== */
-.cardHeader h2 {
-  margin: 0 0 10px 0;
-  font-size: 20px;
+.hour-time{
+  font-size: 12px;
+  color: var(--muted);
+}
+.hour-temp{
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.hour-rain{
+  margin-top: 8px;
+  font-size: 12px;
+  color: #2563eb;
 }
 
-.prayerList {
+/* ====== Prayer list ====== */
+.prayer-list{
   display: grid;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 12px;
 }
-
-.prayerRow {
-  border-radius: 12px;
-  background: rgba(0,0,0,0.03);
+.prayer-row{
+  border-radius: 14px;
   padding: 14px 14px;
+  background: rgba(148, 163, 184, 0.08);
   display: grid;
   grid-template-columns: 1fr auto auto;
-  gap: 12px;
   align-items: center;
+  gap: 12px;
+}
+.prayer-name{
+  font-size: 18px;
+  font-weight: 650;
+}
+.prayer-time{
+  font-variant-numeric: tabular-nums;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.prayer-adhan{
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--muted);
 }
 
-.prayerName { font-weight: 600; }
-.prayerTime { font-variant-numeric: tabular-nums; opacity: 0.9; }
-.prayerAdhanIcon { opacity: 0.8; }
-
-.subLine {
-  grid-column: 1 / -1;
-  font-size: 12px;
-  opacity: 0.65;
-  margin-top: -6px;
+.prayer-row.active{
+  background: var(--accent-soft);
+}
+.prayer-row.active .prayer-time{
+  color: var(--accent);
 }
 
-.prayerRow.next {
-  background: rgba(22, 163, 74, 0.16);
+.sunrise-row{
+  margin: -2px 6px 8px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 0 10px;
 }
 
-.cardFooter {
-  position: absolute;
-  bottom: 14px;
-  left: 0;
-  right: 0;
+.footer-location{
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
   text-align: center;
-  font-size: 12px;
-  opacity: 0.6;
+  color: var(--muted);
+  font-size: 13px;
 }
 
-/* ==========
-   EMPTY CARD
-   ========== */
-.card-empty { background: #ffffff; }
+/* ====== Buttons ====== */
+.btn{
+  border: 0;
+  background: var(--btn);
+  color: var(--btn-text);
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.btn:active{ transform: translateY(1px); }
+.btn-primary{
+  background: var(--btn-primary);
+  color: var(--btn-primary-text);
+}
 
-/* ==========
+/* ====== Settings ====== */
+.settings{
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+.form{
+  display: grid;
+  gap: 14px;
+}
+.form-row label{
+  display: block;
+  font-weight: 650;
+  margin-bottom: 6px;
+}
+.small-label{
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.form-row input, .form-row select{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+}
+.hint{
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.inline{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 4px;
+}
+.btn-row{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.adhan-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.subhead{
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.toggle-list{
+  display: grid;
+  gap: 10px;
+}
+.toggle-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+.custom-url{ margin-top: 10px; }
