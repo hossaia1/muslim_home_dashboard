@@ -1,151 +1,165 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Muslim Home Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    html, body {
-      overflow: hidden;
-    }
-
-    main.grid {
-      height: calc(100vh - 60px);
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 14px;
-    }
-
-    section.card.empty {
-      background: none;
-      border: 1px dashed var(--line);
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-    }
-
-    .sunriseTag {
-      font-size: 11px;
-      color: var(--muted);
-      margin-left: 6px;
-    }
-
-    .modal {
-      background: #111825; /* override too-transparent background */
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Muslim Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand">
-        <div class="title">Home Dashboard</div>
-        <div class="subtitle" id="locationLabel">—</div>
+  <main class="page" id="page">
+    <!-- SETTINGS BUTTON -->
+    <button class="settingsBtn" id="openSettingsBtn" aria-label="Open settings">
+      ⚙️
+    </button>
+
+    <!-- LEFT COLUMN -->
+    <section class="col col-left">
+      <!-- CLOCK CARD -->
+      <div class="card card-clock">
+        <div class="locationLine">
+          <span id="locationSmall">Loading location…</span>
+        </div>
+
+        <div class="timeRow">
+          <div class="bigTime" id="bigTime">--:--:--</div>
+        </div>
+        <div class="dateLine" id="dateLine">---</div>
+
+        <div class="divider"></div>
+
+        <div class="nextRow">
+          <div class="nextLabel">Next:</div>
+          <div class="nextPrayer" id="nextPrayerName">---</div>
+          <div class="countdown" id="nextPrayerCountdown">--:--:--</div>
+        </div>
       </div>
 
-      <button class="iconBtn" id="openSettingsBtn" aria-label="Open settings" title="Settings">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-          <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 1h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.58.23-1.12.54-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 7.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.4 1.05.71 1.63.94l.36 2.54c.04.24.25.42.49.42h3.8c.24 0 .45-.18.49-.42l.36-2.54c.58-.23 1.12-.54 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/>
-        </svg>
-      </button>
-    </header>
-
-    <main class="grid">
-      <section class="card hero">
-        <div class="clock" id="timeNow">--:--</div>
-        <div class="date" id="dateNow">—</div>
-        <div class="nextLine" id="nextPrayerLine">Next prayer: —</div>
-        <div class="countdown" id="countdown">--:--:--</div>
-      </section>
-
-      <section class="card">
-        <div class="cardTitle">Prayer Times</div>
-        <div class="prayerList" id="prayerList"></div>
-        <div class="smallHint" id="prayerMeta">—</div>
-      </section>
-
-      <section class="card">
-        <div class="cardTitle">Weather</div>
+      <!-- WEATHER CARD -->
+      <div class="card card-weather">
         <div class="weatherTop">
-          <div class="weatherIcon" id="weatherIcon"></div>
           <div>
-            <div class="weatherNow">
-              <span id="weatherTemp">—</span>
-              <span class="muted" id="weatherCond">—</span>
+            <div class="weatherTemp">
+              <span id="tempNow">--</span><span class="deg">°</span><span class="unit">C</span>
             </div>
-            <div class="smallHint" id="weatherUpdated">—</div>
+            <div class="weatherDesc" id="weatherDesc">---</div>
+            <div class="weatherPlace" id="weatherPlace">---</div>
+          </div>
+
+          <div class="weatherMeta">
+            <div class="metaLine">💧 <span id="humidityNow">--</span>%</div>
+            <div class="metaLine">🌬️ <span id="windNow">--</span> km/h</div>
           </div>
         </div>
-        <div class="dayparts" id="dayparts"></div>
-      </section>
 
-      <section class="card empty">
-        <div id="verseBox">— Reserved space (e.g. Quran verse or Hadith) —</div>
-      </section>
-    </main>
-  </div>
+        <div class="divider"></div>
 
-  <div class="modalOverlay" id="settingsOverlay" hidden aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-      <div class="modalHeader">
-        <div class="modalTitle" id="settingsTitle">Settings</div>
-        <button class="iconBtn" id="closeSettingsBtn" aria-label="Close settings">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-            <path d="M6.23 4.81 4.81 6.23 10.59 12l-5.78 5.77 1.42 1.42L12 13.41l5.77 5.78 1.42-1.42L13.41 12l5.78-5.77-1.42-1.42L12 10.59z"/>
-          </svg>
-        </button>
+        <div class="hourlyRow" id="hourlyRow">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN -->
+    <section class="col col-right">
+      <!-- PRAYER TIMES CARD -->
+      <div class="card card-prayers">
+        <div class="cardHeader">
+          <h2>Prayer Times</h2>
+        </div>
+
+        <div class="prayerList" id="prayerList">
+          <!-- Filled by JS -->
+        </div>
+
+        <div class="cardFooter">
+          <span id="prayerFooterLocation">---</span>
+        </div>
       </div>
 
-      <div class="modalBody">
+      <!-- EMPTY BOTTOM RIGHT -->
+      <div class="card card-empty">
+        <!-- intentionally empty -->
+      </div>
+    </section>
+  </main>
+
+  <!-- SETTINGS OVERLAY -->
+  <div class="overlay hidden" id="settingsOverlay" role="dialog" aria-modal="true">
+    <div class="settingsPanel">
+      <div class="settingsHeader">
+        <h3>Settings</h3>
+        <button class="closeBtn" id="closeSettingsBtn">✕</button>
+      </div>
+
+      <div class="settingsBody">
         <div class="field">
-          <label for="cityInput">City</label>
-          <div class="row">
-            <input id="cityInput" type="text" placeholder="e.g. Helsinki" />
-            <button class="btn" id="saveCityBtn">Save</button>
-          </div>
-          <div class="smallHint">Uses OpenStreetMap to update location, timezone and prayer times.</div>
+          <label for="locationInput">Location (city/address)</label>
+          <input id="locationInput" type="text" placeholder="e.g. Helsinki, Finland" />
+          <small>Used for prayer times + weather. We’ll auto-convert it to coordinates.</small>
         </div>
 
         <div class="field">
-          <label for="calcMethod">Calculation Method</label>
-          <div class="row">
-            <select id="calcMethod">
-              <option value="2">Egyptian General Authority of Survey</option>
-              <option value="3">Umm Al-Qura University, Makkah</option>
-              <option value="4">University of Islamic Sciences, Karachi</option>
-              <option value="5">Islamic Society of North America</option>
-              <option value="12">Muslim World League</option>
-              <option value="13">Qatar</option>
+          <label for="methodSelect">Prayer calculation method</label>
+          <select id="methodSelect">
+            <option value="2">ISNA (North America)</option>
+            <option value="3">Muslim World League</option>
+            <option value="4">Umm al-Qura, Makkah</option>
+            <option value="5">Egyptian General Authority</option>
+            <option value="1">University of Islamic Sciences, Karachi</option>
+            <option value="7">Institute of Geophysics, Tehran</option>
+            <option value="8">Gulf Region</option>
+            <option value="9">Kuwait</option>
+            <option value="10">Qatar</option>
+            <option value="11">Majlis Ugama Islam Singapura</option>
+            <option value="12">Union Organization Islamic de France</option>
+            <option value="13">Diyanet (Turkey)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Adhan audio</label>
+          <div class="inline">
+            <select id="adhanVoiceSelect">
+              <option value="local:audio/adhan1.mp3">Local: audio/adhan1.mp3</option>
+              <option value="local:audio/adhan2.mp3">Local: audio/adhan2.mp3</option>
+              <!-- You can add your own URLs here -->
             </select>
-            <button class="btn secondary" id="saveMethodBtn">Save method</button>
+            <button class="btn" id="testAdhanBtn">Test</button>
           </div>
+          <small>
+            “Local” means you put the mp3 file in your project folder. If you want, you can replace these with an https URL.
+          </small>
         </div>
 
         <div class="field">
-          <label>Adhan Sound</label>
-          <div class="row space">
-            <button class="pill" id="globalSoundBtn" type="button">Sound: OFF</button>
-            <button class="btn secondary" id="testSoundBtn" type="button">Test beep</button>
+          <label>Adhan enabled per prayer</label>
+          <div class="togglesGrid" id="adhanToggles">
+            <!-- Filled by JS -->
           </div>
-          <div class="smallHint">Global toggle plus per-prayer controls in the list.</div>
         </div>
 
-        <div class="field danger">
-          <div class="row space">
-            <div>
-              <div style="font-weight: 600">Reset all data</div>
-              <div class="smallHint">Clears saved city, method and sound preferences.</div>
-            </div>
-            <button class="btn danger" id="resetBtn" type="button">Reset</button>
+        <div class="field fieldRow">
+          <div>
+            <label for="darkModeToggle">Dark mode</label>
+            <small>Changes the whole UI theme.</small>
           </div>
+          <label class="switch">
+            <input type="checkbox" id="darkModeToggle" />
+            <span class="slider"></span>
+          </label>
         </div>
+      </div>
+
+      <div class="settingsFooter">
+        <button class="btn secondary" id="resetBtn">Reset</button>
+        <button class="btn primary" id="saveBtn">Save</button>
       </div>
     </div>
   </div>
+
+  <!-- AUDIO ELEMENT -->
+  <audio id="adhanAudio" preload="auto"></audio>
 
   <script src="app.js"></script>
 </body>
