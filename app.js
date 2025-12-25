@@ -94,10 +94,12 @@ function openSettings(){
   calcMethodSel.value = String(state.method);
   renderGlobalSoundPill();
   settingsOverlay.hidden = false;
+  settingsOverlay.setAttribute("aria-hidden", "false");
 }
 
 function closeSettings(){
   settingsOverlay.hidden = true;
+  settingsOverlay.setAttribute("aria-hidden", "true");
 }
 
 function renderGlobalSoundPill(){
@@ -427,9 +429,17 @@ async function refreshAll(){
 
 // ---------- Events ----------
 openSettingsBtn.addEventListener("click", openSettings);
-closeSettingsBtn.addEventListener("click", closeSettings);
+closeSettingsBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  closeSettings();
+});
 settingsOverlay.addEventListener("click", (e) => {
   if(e.target === settingsOverlay) closeSettings();
+});
+document.addEventListener("keydown", (e) => {
+  if(e.key === "Escape" && !settingsOverlay.hidden){
+    closeSettings();
+  }
 });
 
 saveCityBtn.addEventListener("click", async () => {
