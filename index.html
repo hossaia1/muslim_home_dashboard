@@ -1,165 +1,173 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Muslim Dashboard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Muslim Home Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="page" id="page">
-    <!-- SETTINGS BUTTON -->
-    <button class="settingsBtn" id="openSettingsBtn" aria-label="Open settings">
-      ⚙️
-    </button>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="location-line" id="locationLine">Loading location…</div>
+    </div>
 
-    <!-- LEFT COLUMN -->
-    <section class="col col-left">
-      <!-- CLOCK CARD -->
-      <div class="card card-clock">
-        <div class="locationLine">
-          <span id="locationSmall">Loading location…</span>
+    <div class="topbar-right">
+      <button class="btn" id="btnDashboard" aria-label="Show dashboard">Dashboard</button>
+      <button class="btn btn-primary" id="btnSettings" aria-label="Open settings">Settings</button>
+    </div>
+  </header>
+
+  <!-- DASHBOARD VIEW -->
+  <main class="app" id="viewDashboard">
+    <section class="grid">
+      <!-- LEFT COLUMN -->
+      <div class="col col-left">
+        <!-- TIME CARD -->
+        <div class="card card-time">
+          <div class="time-wrap">
+            <div class="clock" id="clock">--:--:--</div>
+            <div class="date" id="dateLine">---</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="next-row">
+            <div class="next-label">Next:</div>
+            <div class="next-prayer" id="nextPrayerName">---</div>
+            <div class="countdown" id="countdown">--:--:--</div>
+          </div>
         </div>
 
-        <div class="timeRow">
-          <div class="bigTime" id="bigTime">--:--:--</div>
-        </div>
-        <div class="dateLine" id="dateLine">---</div>
+        <!-- WEATHER CARD -->
+        <div class="card card-weather">
+          <div class="weather-top">
+            <div class="temp" id="tempNow">--°</div>
+            <div class="temp-unit">C</div>
 
-        <div class="divider"></div>
-
-        <div class="nextRow">
-          <div class="nextLabel">Next:</div>
-          <div class="nextPrayer" id="nextPrayerName">---</div>
-          <div class="countdown" id="nextPrayerCountdown">--:--:--</div>
-        </div>
-      </div>
-
-      <!-- WEATHER CARD -->
-      <div class="card card-weather">
-        <div class="weatherTop">
-          <div>
-            <div class="weatherTemp">
-              <span id="tempNow">--</span><span class="deg">°</span><span class="unit">C</span>
+            <div class="weather-meta">
+              <div class="weather-desc" id="weatherDesc">---</div>
+              <div class="weather-city" id="weatherCity">---</div>
             </div>
-            <div class="weatherDesc" id="weatherDesc">---</div>
-            <div class="weatherPlace" id="weatherPlace">---</div>
+
+            <div class="weather-stats">
+              <div class="stat">
+                <div class="stat-label">Humidity</div>
+                <div class="stat-value" id="humidityNow">--%</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Wind</div>
+                <div class="stat-value" id="windNow">-- km/h</div>
+              </div>
+            </div>
           </div>
 
-          <div class="weatherMeta">
-            <div class="metaLine">💧 <span id="humidityNow">--</span>%</div>
-            <div class="metaLine">🌬️ <span id="windNow">--</span> km/h</div>
+          <div class="divider"></div>
+
+          <div class="hourly" id="hourlyStrip">
+            <!-- filled by JS -->
           </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="hourlyRow" id="hourlyRow">
-          <!-- Filled by JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- RIGHT COLUMN -->
-    <section class="col col-right">
-      <!-- PRAYER TIMES CARD -->
-      <div class="card card-prayers">
-        <div class="cardHeader">
-          <h2>Prayer Times</h2>
-        </div>
-
-        <div class="prayerList" id="prayerList">
-          <!-- Filled by JS -->
-        </div>
-
-        <div class="cardFooter">
-          <span id="prayerFooterLocation">---</span>
         </div>
       </div>
 
-      <!-- EMPTY BOTTOM RIGHT -->
-      <div class="card card-empty">
-        <!-- intentionally empty -->
+      <!-- RIGHT COLUMN -->
+      <div class="col col-right">
+        <div class="card card-prayers">
+          <div class="card-title">Prayer Times</div>
+
+          <div class="prayer-list" id="prayerList">
+            <!-- filled by JS -->
+          </div>
+
+          <div class="footer-location" id="footerLocation">—</div>
+        </div>
       </div>
     </section>
   </main>
 
-  <!-- SETTINGS OVERLAY -->
-  <div class="overlay hidden" id="settingsOverlay" role="dialog" aria-modal="true">
-    <div class="settingsPanel">
-      <div class="settingsHeader">
-        <h3>Settings</h3>
-        <button class="closeBtn" id="closeSettingsBtn">✕</button>
-      </div>
+  <!-- SETTINGS VIEW -->
+  <main class="app hidden" id="viewSettings">
+    <section class="settings">
+      <div class="card">
+        <div class="card-title">Settings</div>
 
-      <div class="settingsBody">
-        <div class="field">
-          <label for="locationInput">Location (city/address)</label>
-          <input id="locationInput" type="text" placeholder="e.g. Helsinki, Finland" />
-          <small>Used for prayer times + weather. We’ll auto-convert it to coordinates.</small>
-        </div>
+        <div class="form">
+          <div class="form-row">
+            <label for="locationInput">Location (city, country)</label>
+            <input id="locationInput" type="text" placeholder="e.g., Mecca, Saudi Arabia" />
+            <div class="hint">Used for prayer times + weather. Example: “Helsinki, Finland”.</div>
+          </div>
 
-        <div class="field">
-          <label for="methodSelect">Prayer calculation method</label>
-          <select id="methodSelect">
-            <option value="2">ISNA (North America)</option>
-            <option value="3">Muslim World League</option>
-            <option value="4">Umm al-Qura, Makkah</option>
-            <option value="5">Egyptian General Authority</option>
-            <option value="1">University of Islamic Sciences, Karachi</option>
-            <option value="7">Institute of Geophysics, Tehran</option>
-            <option value="8">Gulf Region</option>
-            <option value="9">Kuwait</option>
-            <option value="10">Qatar</option>
-            <option value="11">Majlis Ugama Islam Singapura</option>
-            <option value="12">Union Organization Islamic de France</option>
-            <option value="13">Diyanet (Turkey)</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Adhan audio</label>
-          <div class="inline">
-            <select id="adhanVoiceSelect">
-              <option value="local:audio/adhan1.mp3">Local: audio/adhan1.mp3</option>
-              <option value="local:audio/adhan2.mp3">Local: audio/adhan2.mp3</option>
-              <!-- You can add your own URLs here -->
+          <div class="form-row">
+            <label for="methodSelect">Prayer calculation method</label>
+            <select id="methodSelect">
+              <option value="2">ISNA (North America)</option>
+              <option value="3">Muslim World League</option>
+              <option value="4">Umm Al-Qura (Makkah)</option>
+              <option value="5">Egyptian General Authority</option>
+              <option value="1">University of Islamic Sciences, Karachi</option>
+              <option value="7">Institute of Geophysics, Tehran</option>
+              <option value="8">Gulf Region</option>
+              <option value="9">Kuwait</option>
+              <option value="10">Qatar</option>
+              <option value="11">Majlis Ugama Islam Singapura</option>
+              <option value="12">UOIF (France)</option>
+              <option value="13">Diyanet (Turkey)</option>
+              <option value="14">Spiritual Administration of Muslims of Russia</option>
             </select>
-            <button class="btn" id="testAdhanBtn">Test</button>
           </div>
-          <small>
-            “Local” means you put the mp3 file in your project folder. If you want, you can replace these with an https URL.
-          </small>
-        </div>
 
-        <div class="field">
-          <label>Adhan enabled per prayer</label>
-          <div class="togglesGrid" id="adhanToggles">
-            <!-- Filled by JS -->
-          </div>
-        </div>
+          <div class="form-row">
+            <label>Adhan audio</label>
+            <div class="adhan-grid">
+              <div class="adhan-col">
+                <div class="subhead">Per prayer</div>
+                <div class="toggle-list" id="adhanToggles">
+                  <!-- filled by JS -->
+                </div>
+              </div>
 
-        <div class="field fieldRow">
-          <div>
-            <label for="darkModeToggle">Dark mode</label>
-            <small>Changes the whole UI theme.</small>
+              <div class="adhan-col">
+                <div class="subhead">Voice</div>
+                <select id="voiceSelect"></select>
+
+                <div class="custom-url hidden" id="customUrlRow">
+                  <label for="customVoiceUrl" class="small-label">Custom MP3 URL</label>
+                  <input id="customVoiceUrl" type="text" placeholder="https://example.com/adhan.mp3" />
+                </div>
+
+                <div class="btn-row">
+                  <button class="btn" id="btnTestAdhan" type="button">Test sound</button>
+                  <button class="btn" id="btnStopAdhan" type="button">Stop</button>
+                </div>
+
+                <div class="hint">
+                  Tip: some public MP3 links can break over time. If “Test sound” doesn’t play, use a custom MP3 URL.
+                </div>
+              </div>
+            </div>
           </div>
-          <label class="switch">
-            <input type="checkbox" id="darkModeToggle" />
-            <span class="slider"></span>
-          </label>
+
+          <div class="form-row">
+            <label class="inline">
+              <input type="checkbox" id="darkModeToggle" />
+              Dark mode
+            </label>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btnSave" type="button">Save</button>
+            <button class="btn" id="btnCancel" type="button">Cancel</button>
+          </div>
+
+          <div class="hint" id="saveHint"></div>
         </div>
       </div>
+    </section>
+  </main>
 
-      <div class="settingsFooter">
-        <button class="btn secondary" id="resetBtn">Reset</button>
-        <button class="btn primary" id="saveBtn">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- AUDIO ELEMENT -->
-  <audio id="adhanAudio" preload="auto"></audio>
+  <!-- hidden audio player -->
+  <audio id="adhanAudio" preload="none"></audio>
 
   <script src="app.js"></script>
 </body>
