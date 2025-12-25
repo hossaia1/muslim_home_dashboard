@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Muslim Home Dashboard</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#111825;
+      --muted:#9bb0c7;
+      --text:#e8f0ff;
+      --accent:#7dd3fc;
+      --good:#86efac;
+      --warn:#fde68a;
+      --bad:#fca5a5;
+      --line:rgba(255,255,255,.08);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(125,211,252,.12), transparent 55%),
+                  radial-gradient(1000px 700px at 100% 30%, rgba(134,239,172,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      height:100vh;
+      overflow:hidden;
+    }
+
+    .wrap{
+      height:100vh;
+      padding:22px;
+      display:grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap:18px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+      overflow:hidden;
+    }
+
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .time{
+      font-size:68px;
+      font-weight:750;
+      letter-spacing:-1px;
+      line-height:1;
+    }
+    .date{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:18px;
+    }
+
+    .chipRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background: rgba(17,24,37,.55);
+      padding:10px 12px;
+      border-radius:999px;
+      color: var(--text);
+      font-size:14px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      user-select:none;
+    }
+    .chip button{
+      border:0;
+      background:transparent;
+      color:var(--accent);
+      font-weight:650;
+      cursor:pointer;
+      padding:0;
+    }
+
+    .sectionTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .small{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .gridRight{
+      display:grid;
+      grid-template-rows: 1fr 1fr;
+      gap:18px;
+    }
+
+    /* Prayer table */
+    .ptable{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
+    .ptable tr{
+      border-top:1px solid var(--line);
+    }
+    .ptable td{
+      padding:12px 0;
+      font-size:18px;
+    }
+    .pname{
+      color:var(--muted);
+      width:34%;
+    }
+    .ptime{
+      font-weight:650;
+      width:26%;
+      text-align:right;
+    }
+    .toggleCell{
+      width:40%;
+      text-align:right;
+    }
+    .toggle{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-size:14px;
+      color:var(--muted);
+    }
+    .switch{
+      width:46px;
+      height:26px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      position:relative;
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+    .knob{
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      background: rgba(255,255,255,.85);
+      position:absolute;
+      top:1px;
+      left:1px;
+      transition: transform .18s ease;
+    }
+    .switch.on{
+      background: rgba(134,239,172,.18);
+      border-color: rgba(134,239,172,.35);
+    }
+    .switch.on .knob{
+      transform: translateX(20px);
+      background: rgba(134,239,172,.95);
+    }
+
+    .nextBox{
+      margin-top:12px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background: rgba(17,24,37,.35);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .nextLabel{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:6px;
+    }
+    .nextName{
+      font-size:22px;
+      font-weight:750;
+    }
+    .countdown{
+      text-align:right;
+    }
+    .countdown .big{
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .countdown .small{
+      margin-top:4px;
+    }
+
+    /* Weather */
+    .weatherMain{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding-top:8px;
+    }
+    .temp{
+      font-size:54px;
+      font-weight:800;
+      line-height:1;
+    }
+    .cond{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:16px;
+    }
+    .loc{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:4px;
+    }
+
+    /* Settings modal */
+    .modalBackdrop{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:10;
+    }
+    .modal{
+      width:min(720px, 100%);
+      background: rgba(13,18,28,.98);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow: var(--shadow);
+      padding:18px;
+    }
+    .modalHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .modalHeader h3{
+      margin:0;
+      font-size:18px;
+    }
+    .modalHeader button{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+    }
+    .formRow{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      margin-top:12px;
+    }
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      outline:none;
+      font-size:16px;
+    }
+    .primary{
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(125,211,252,.35);
+      background: rgba(125,211,252,.14);
+      color: var(--text);
+      cursor:pointer;
+      font-weight:700;
+    }
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .hint{
+      margin-top:10px;
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .status{
+      margin-top:10px;
+      color: var(--muted);
+      font-size:13px;
+    }
+
+    @media (max-width: 900px){
+      body{overflow:auto}
+      .wrap{grid-template-columns: 1fr; height:auto; min-height:100vh}
+      .time{font-size:56px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- LEFT: Clock + prayers -->
+    <div class="card">
+      <div class="top">
+        <div>
+          <div class="time" id="time">--:--</div>
+          <div class="date" id="date">---</div>
+        </div>
+
+        <div class="chipRow">
+          <div class="chip">
+            <span id="cityChip">Location: --</span>
+            <button id="openSettingsBtn" type="button">Settings</button>
+          </div>
+          <div class="chip">
+            <span id="adhanStatus">Adhan: tap to enable sound</span>
+            <button id="enableSoundBtn" type="button">Enable</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sectionTitle" style="margin-top:14px;">
+        <h2>Prayer Times</h2>
+        <div class="small" id="methodLabel">Auto (AlAdhan API)</div>
+      </div>
+
+      <div class="nextBox">
+        <div>
+          <div class="nextLabel">Next prayer</div>
+          <div class="nextName" id="nextPrayer">--</div>
+          <div class="small" id="nextPrayerAt">--</div>
+        </div>
+        <div class="countdown">
+          <div class="big" id="countdown">--:--:--</div>
+          <div class="small">until next</div>
+        </div>
+      </div>
+
+      <table class="ptable" id="prayerTable"></table>
+    </div>
+
+    <!-- RIGHT: Weather + empty space for future -->
+    <div class="gridRight">
+      <div class="card">
+        <div class="sectionTitle">
+          <h2>Weather</h2>
+          <div class="small" id="weatherUpdated">--</div>
+        </div>
+
+        <div class="weatherMain">
+          <div>
+            <div class="temp" id="temp">--°</div>
+            <div class="cond" id="cond">--</div>
+            <div class="loc" id="loc">--</div>
+          </div>
+          <div class="small" id="weatherNote" style="max-width:220px; text-align:right;">
+            Simple current conditions only.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sectionTitle">
+          <h2>Notes</h2>
+          <div class="small">optional</div>
+        </div>
+        <div class="small" style="line-height:1.5;">
+          Keep this empty for calm UI. Later you can add:
+          <br>• Hijri date
+          <br>• Minimal reminders
+          <br>• Quiet mode schedule
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modalBackdrop" id="modalBackdrop">
+    <div class="modal">
+      <div class="modalHeader">
+        <h3>Settings</h3>
+        <button id="closeSettingsBtn" type="button">Close</button>
+      </div>
+
+      <div class="small">Set your location (used for prayer times + weather). Saved locally on the tablet.</div>
+
+      <div class="formRow">
+        <input id="cityInput" placeholder="City search (e.g., Helsinki)" />
+        <button class="primary" id="searchCityBtn" type="button">Search</button>
+      </div>
+
+      <div class="row2">
+        <input id="latInput" placeholder="Latitude (e.g., 60.1699)" />
+        <input id="lonInput" placeholder="Longitude (e.g., 24.9384)" />
+      </div>
+
+      <div class="formRow">
+        <button class="primary" id="saveCoordsBtn" type="button">Save coordinates</button>
+        <button class="primary" id="useGpsBtn" type="button">Use tablet GPS</button>
+      </div>
+
+      <div class="hint">
+        Tip: For a wall dashboard, set coordinates once and leave it. GPS can drift indoors.
+      </div>
+
+      <div class="status" id="settingsStatus">—</div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Storage keys
+     */
+    const KEY = {
+      location: "mhd_location",      // {name, lat, lon}
+      adhanToggles: "mhd_adhan",      // {Fajr:true, Dhuhr:false...}
+      soundEnabled: "mhd_sound_ok"    // boolean
+    };
+
+    /**
+     * Defaults (Helsinki as safe initial)
+     */
+    const DEFAULT_LOCATION = { name: "Helsinki", lat: 60.1699, lon: 24.9384 };
+    const PRAYERS = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+
+    let state = {
+      location: loadJson(KEY.location, DEFAULT_LOCATION),
+      adhan: loadJson(KEY.adhanToggles, {Fajr:false,Dhuhr:false,Asr:false,Maghrib:true,Isha:false}),
+      soundEnabled: loadJson(KEY.soundEnabled, false),
+      timings: null,     // {Fajr:"05:..", ...} for today
+      next: null,        // {name, at: Date}
+      lastAdhanFired: null
+    };
+
+    // ---------- UI refs ----------
+    const elTime = document.getElementById("time");
+    const elDate = document.getElementById("date");
+
+    const elCityChip = document.getElementById("cityChip");
+    const openSettingsBtn = document.getElementById("openSettingsBtn");
+    const enableSoundBtn = document.getElementById("enableSoundBtn");
+    const elAdhanStatus = document.getElementById("adhanStatus");
+
+    const elPrayerTable = document.getElementById("prayerTable");
+    const elNextPrayer = document.getElementById("nextPrayer");
+    const elNextPrayerAt = document.getElementById("nextPrayerAt");
+    const elCountdown = document.getElementById("countdown");
+
+    const elTemp = document.getElementById("temp");
+    const elCond = document.getElementById("cond");
+    const elLoc = document.getElementById("loc");
+    const elWeatherUpdated = document.getElementById("weatherUpdated");
+
+    // Settings modal
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+    const cityInput = document.getElementById("cityInput");
+    const searchCityBtn = document.getElementById("searchCityBtn");
+    const latInput = document.getElementById("latInput");
+    const lonInput = document.getElementById("lonInput");
+    const saveCoordsBtn = document.getElementById("saveCoordsBtn");
+    const useGpsBtn = document.getElementById("useGpsBtn");
+    const settingsStatus = document.getElementById("settingsStatus");
+
+    // ---------- Utilities ----------
+    function loadJson(key, fallback){
+      try{
+        const raw = localStorage.getItem(key);
+        if(!raw) return fallback;
+        return JSON.parse(raw);
+      }catch(e){
+        return fallback;
+      }
+    }
+    function saveJson(key, value){
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+    function pad2(n){ return String(n).padStart(2,"0"); }
+
+    function formatTimeHM(d){
+      return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    }
+
+    function formatDayDate(d){
+      // Example: Thu, 25 Dec 2025
+      return d.toLocaleDateString(undefined, {
+        weekday:"short", year:"numeric", month:"short", day:"numeric"
+      });
+    }
+
+    function parseHHMMToDateToday(hhmm){
+      // hhmm like "05:34"
+      const [h,m] = hhmm.split(":").map(Number);
+      const now = new Date();
+      const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0, 0);
+      return dt;
+    }
+
+    function secondsBetween(a,b){
+      return Math.floor((b.getTime() - a.getTime())/1000);
+    }
+
+    function fmtHMS(totalSec){
+      const s = Math.max(0, totalSec);
+      const h = Math.floor(s/3600);
+      const m = Math.floor((s%3600)/60);
+      const r = s%60;
+      return `${pad2(h)}:${pad2(m)}:${pad2(r)}`;
+    }
+
+    // ---------- Sound (simple beep) ----------
+    function beep(){
+      // Works after user interaction (Enable button). Minimal and reliable.
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.value = 740;
+        g.gain.value = 0.02; // quiet
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start();
+        setTimeout(() => { o.stop(); ctx.close(); }, 900);
+      }catch(e){
+        // ignore
+      }
+    }
+
+    function setSoundUI(){
+      if(state.soundEnabled){
+        elAdhanStatus.textContent = "Adhan: sound enabled";
+        enableSoundBtn.textContent = "OK";
+      }else{
+        elAdhanStatus.textContent = "Adhan: tap to enable sound";
+        enableSoundBtn.textContent = "Enable";
+      }
+    }
+
+    // ---------- Prayer times (AlAdhan) ----------
+    async function fetchPrayerTimes(){
+      const {lat, lon} = state.location;
+      // AlAdhan "timings" endpoint: returns today's timings based on coordinates
+      const url = `https://api.aladhan.com/v1/timings?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&method=2`;
+      const res = await fetch(url, { cache: "no-store" });
+      if(!res.ok) throw new Error("Prayer API failed");
+      const json = await res.json();
+
+      const t = json?.data?.timings || {};
+      // Strip timezone suffixes like "05:12 (EET)"
+      const clean = {};
+      for(const p of PRAYERS){
+        const raw = (t[p] || "").toString();
+        clean[p] = raw.split(" ")[0].trim();
+      }
+      state.timings = clean;
+      renderPrayerTable();
+      computeNextPrayer();
+    }
+
+    function computeNextPrayer(){
+      if(!state.timings) return;
+      const now = new Date();
+
+      let next = null;
+      for(const p of PRAYERS){
+        const at = parseHHMMToDateToday(state.timings[p]);
+        if(at > now){
+          next = { name: p, at };
+          break;
+        }
+      }
+      // If none left today -> next is tomorrow's Fajr (approx: use today fajr + 24h)
+      if(!next){
+        const fajrToday = parseHHMMToDateToday(state.timings["Fajr"]);
+        const fajrTomorrow = new Date(fajrToday.getTime() + 24*3600*1000);
+        next = { name: "Fajr", at: fajrTomorrow };
+      }
+
+      state.next = next;
+      elNextPrayer.textContent = next.name;
+      elNextPrayerAt.textContent = `At ${formatTimeHM(next.at)}`;
+    }
+
+    function renderPrayerTable(){
+      const t = state.timings;
+      if(!t){
+        elPrayerTable.innerHTML = `<tr><td class="small">Loading prayer times…</td></tr>`;
+        return;
+      }
+
+      const now = new Date();
+      const nextName = state.next?.name;
+
+      elPrayerTable.innerHTML = PRAYERS.map(p => {
+        const isNext = (p === nextName);
+        const isOn = !!state.adhan[p];
+        const rowStyle = isNext ? `style="color:var(--good);"` : "";
+        return `
+          <tr ${rowStyle}>
+            <td class="pname">${p}</td>
+            <td class="ptime">${t[p] || "--:--"}</td>
+            <td class="toggleCell">
+              <div class="toggle">
+                <span>${isOn ? "Adhan ON" : "Adhan OFF"}</span>
+                <div class="switch ${isOn ? "on":""}" data-prayer="${p}" role="button" aria-label="toggle ${p}">
+                  <div class="knob"></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      // attach events
+      elPrayerTable.querySelectorAll(".switch").forEach(sw => {
+        sw.addEventListener("click", () => {
+          const p = sw.getAttribute("data-prayer");
+          state.adhan[p] = !state.adhan[p];
+          saveJson(KEY.adhanToggles, state.adhan);
+          renderPrayerTable();
+        });
+      });
+    }
+
+    // Fire adhan when we cross a prayer time (basic + reliable)
+    function checkAdhanTrigger(){
+      if(!state.timings || !state.soundEnabled) return;
+
+      const now = new Date();
+      // prevent multiple triggers in same minute
+      const minuteKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`;
+      if(state.lastAdhanFired === minuteKey) return;
+
+      for(const p of PRAYERS){
+        if(!state.adhan[p]) continue;
+
+        const at = parseHHMMToDateToday(state.timings[p]);
+        const diffSec = Math.abs(secondsBetween(now, at));
+        // if within ~10 seconds of the exact minute, trigger
+        if(diffSec <= 10){
+          state.lastAdhanFired = minuteKey;
+          beep(); // replace later with real adhan audio if you want
+          break;
+        }
+      }
+    }
+
+    // ---------- Weather (Open-Meteo) ----------
+    function weatherCodeToText(code){
+      // minimal mapping
+      const map = {
+        0:"Clear",
+        1:"Mainly clear",
+        2:"Partly cloudy",
+        3:"Overcast",
+        45:"Fog",
+        48:"Depositing rime fog",
+        51:"Light drizzle",
+        53:"Drizzle",
+        55:"Dense drizzle",
+        61:"Slight rain",
+        63:"Rain",
+        65:"Heavy rain",
+        71:"Slight snow",
+        73:"Snow",
+        75:"Heavy snow",
+        80:"Rain showers",
+        81:"Rain showers",
+        82:"Violent showers",
+        95:"Thunderstorm"
+      };
+      return map[code] || "—";
+    }
+
+    async function fetchWeather(){
+      const {lat, lon, name} = state.location;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=temperature_2m,weather_code&timezone=auto`;
+      const res = await fetch(url, { cache: "no-store" });
+      if(!res.ok) throw new Error("Weather API failed");
+      const json = await res.json();
+
+      const temp = json?.current?.temperature_2m;
+      const code = json?.current?.weather_code;
+      elTemp.textContent = (temp === undefined || temp === null) ? "--°" : `${Math.round(temp)}°`;
+      elCond.textContent = weatherCodeToText(code);
+      elLoc.textContent = `${name} (${lat.toFixed(3)}, ${lon.toFixed(3)})`;
+      elWeatherUpdated.textContent = "Updated " + new Date().toLocaleTimeString(undefined, {hour:"2-digit", minute:"2-digit"});
+    }
+
+    // ---------- City search (Open-Meteo geocoding) ----------
+    async function searchCity(name){
+      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en&format=json`;
+      const res = await fetch(url, { cache: "no-store" });
+      if(!res.ok) throw new Error("City search failed");
+      const json = await res.json();
+      const r = json?.results?.[0];
+      if(!r) return null;
+      return { name: `${r.name}${r.country ? ", " + r.country : ""}`, lat: r.latitude, lon: r.longitude };
+    }
+
+    // ---------- Settings UI ----------
+    function openSettings(){
+      cityInput.value = "";
+      latInput.value = state.location.lat;
+      lonInput.value = state.location.lon;
+      settingsStatus.textContent = `Current: ${state.location.name}`;
+      modalBackdrop.style.display = "flex";
+    }
+    function closeSettings(){
+      modalBackdrop.style.display = "none";
+    }
+
+    async function applyLocation(loc){
+      state.location = loc;
+      saveJson(KEY.location, state.location);
+      updateLocationUI();
+
+      // refresh both
+      state.timings = null;
+      renderPrayerTable();
+
+      try{
+        await fetchPrayerTimes();
+      }catch(e){
+        // keep UI alive even if API fails
+        elNextPrayer.textContent = "Prayer API error";
+        elNextPrayerAt.textContent = "Check internet";
+      }
+
+      try{
+        await fetchWeather();
+      }catch(e){
+        elCond.textContent = "Weather API error";
+      }
+    }
+
+    function updateLocationUI(){
+      elCityChip.textContent = `Location: ${state.location.name}`;
+    }
+
+    // ---------- Clock loop ----------
+    function tick(){
+      const now = new Date();
+      elTime.textContent = now.toLocaleTimeString(undefined, {hour:"2-digit", minute:"2-digit"});
+      elDate.textContent = formatDayDate(now);
+
+      if(state.next){
+        const sec = secondsBetween(now, state.next.at);
+        elCountdown.textContent = fmtHMS(sec);
+      }else{
+        elCountdown.textContent = "--:--:--";
+      }
+
+      // If it's a new day at 00:01, refresh prayer times automatically
+      if(now.getHours() === 0 && now.getMinutes() === 1 && now.getSeconds() < 2){
+        fetchPrayerTimes().catch(()=>{});
+      }
+
+      checkAdhanTrigger();
+    }
+
+    // ---------- Event wiring ----------
+    openSettingsBtn.addEventListener("click", openSettings);
+    closeSettingsBtn.addEventListener("click", closeSettings);
+    modalBackdrop.addEventListener("click", (e) => {
+      if(e.target === modalBackdrop) closeSettings();
+    });
+
+    enableSoundBtn.addEventListener("click", async () => {
+      // User gesture enables audio in most browsers
+      state.soundEnabled = true;
+      saveJson(KEY.soundEnabled, state.soundEnabled);
+      setSoundUI();
+      beep();
+    });
+
+    searchCityBtn.addEventListener("click", async () => {
+      const q = cityInput.value.trim();
+      if(!q){ settingsStatus.textContent = "Type a city name first."; return; }
+      settingsStatus.textContent = "Searching…";
+      try{
+        const loc = await searchCity(q);
+        if(!loc){
+          settingsStatus.textContent = "No result. Try a different spelling.";
+          return;
+        }
+        settingsStatus.textContent = `Found: ${loc.name}. Applying…`;
+        await applyLocation(loc);
+        settingsStatus.textContent = `Saved: ${loc.name}`;
+      }catch(e){
+        settingsStatus.textContent = "Search failed. Check internet.";
+      }
+    });
+
+    saveCoordsBtn.addEventListener("click", async () => {
+      const lat = Number(latInput.value);
+      const lon = Number(lonInput.value);
+      if(!Number.isFinite(lat) || !Number.isFinite(lon)){
+        settingsStatus.textContent = "Invalid coordinates.";
+        return;
+      }
+      const loc = { name: state.location.name || "Custom", lat, lon };
+      settingsStatus.textContent = "Saving coordinates…";
+      await applyLocation(loc);
+      settingsStatus.textContent = `Saved: ${loc.name}`;
+    });
+
+    useGpsBtn.addEventListener("click", () => {
+      if(!navigator.geolocation){
+        settingsStatus.textContent = "GPS not available in this browser.";
+        return;
+      }
+      settingsStatus.textContent = "Requesting GPS…";
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        const loc = { name: "GPS location", lat, lon };
+        settingsStatus.textContent = "Applying GPS location…";
+        await applyLocation(loc);
+        settingsStatus.textContent = "Saved: GPS location";
+      }, () => {
+        settingsStatus.textContent = "GPS denied/unavailable.";
+      }, { enableHighAccuracy: true, timeout: 10000 });
+    });
+
+    // ---------- Boot ----------
+    function boot(){
+      updateLocationUI();
+      setSoundUI();
+      renderPrayerTable();
+      tick();
+      setInterval(tick, 1000);
+
+      // Initial loads
+      fetchPrayerTimes()
+        .then(() => { computeNextPrayer(); renderPrayerTable(); })
+        .catch(() => {
+          elNextPrayer.textContent = "Prayer API error";
+          elNextPrayerAt.textContent = "Check internet";
+        });
+
+      fetchWeather().catch(() => {
+        elCond.textContent = "Weather API error";
+      });
+
+      // Refresh weather every 20 minutes
+      setInterval(() => fetchWeather().catch(()=>{}), 20 * 60 * 1000);
+
+      // Safety: if the tab is left open for days, refresh page once per day at 03:00
+      setInterval(() => {
+        const now = new Date();
+        if(now.getHours() === 3 && now.getMinutes() === 0 && now.getSeconds() < 2){
+          location.reload();
+        }
+      }, 1000);
+    }
+
+    boot();
+  </script>
+</body>
+</html>
